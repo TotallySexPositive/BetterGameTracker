@@ -1,5 +1,5 @@
 // Example IDL file for our result object 
-namespace BetterGameTracker.Types;
+namespace BGT.Types;
 enum Result:byte { 
 	WIN, 
 	LOSS, 

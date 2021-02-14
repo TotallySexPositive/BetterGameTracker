@@ -15,9 +15,6 @@ public:
 	virtual std::ostream save() = 0; //get a stream representation to save to file
 	virtual bool load(std::istream) = 0; //load the string representation from a stream
 private:
-	int m_wins;
-	int m_losses;
-	int m_streak;
-	
-	ResultType m_last;
+
+	BGT::Types::Results* fb_result;
 };
