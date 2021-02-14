@@ -1,0 +1,15 @@
+// Example IDL file for our result object 
+namespace BetterGameTracker.Types;
+enum Result:byte { 
+	WIN, 
+	LOSS, 
+	UNINITIALIZED 
+}
+table Results {
+  wins:short = 0;
+  losses:short = 0;
+  mmr:float = 0.0;
+  previous:Result = UNINITIALIZED;
+  mode:string;
+}
+root_type Results;
