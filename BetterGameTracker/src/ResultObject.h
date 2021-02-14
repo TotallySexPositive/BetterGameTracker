@@ -2,13 +2,8 @@
 #include <string>
 #include <istream>
 #include <ostream>
+#include "flatbuffer/ResultObject_generated.h"
 
-enum class ResultType
-{
-	WIN,
-	LOSS,
-	UNINITIALIZED
-};
 
 class ResultObject
 {
