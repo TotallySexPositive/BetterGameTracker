@@ -50,30 +50,61 @@ struct Results FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
     VT_WINS = 4,
     VT_LOSSES = 6,
-    VT_MMR = 8,
-    VT_PREVIOUS = 10,
-    VT_MODE = 12
+    VT_STREAK = 8,
+    VT_MMR = 10,
+    VT_LAST_MMR = 12,
+    VT_PREVIOUS = 14,
+    VT_MODE = 16
   };
   int16_t wins() const {
     return GetField<int16_t>(VT_WINS, 0);
   }
+  bool mutate_wins(int16_t _wins) {
+    return SetField<int16_t>(VT_WINS, _wins, 0);
+  }
   int16_t losses() const {
     return GetField<int16_t>(VT_LOSSES, 0);
+  }
+  bool mutate_losses(int16_t _losses) {
+    return SetField<int16_t>(VT_LOSSES, _losses, 0);
+  }
+  int16_t streak() const {
+    return GetField<int16_t>(VT_STREAK, 0);
+  }
+  bool mutate_streak(int16_t _streak) {
+    return SetField<int16_t>(VT_STREAK, _streak, 0);
   }
   float mmr() const {
     return GetField<float>(VT_MMR, 0.0f);
   }
+  bool mutate_mmr(float _mmr) {
+    return SetField<float>(VT_MMR, _mmr, 0.0f);
+  }
+  float last_mmr() const {
+    return GetField<float>(VT_LAST_MMR, 0.0f);
+  }
+  bool mutate_last_mmr(float _last_mmr) {
+    return SetField<float>(VT_LAST_MMR, _last_mmr, 0.0f);
+  }
   BGT::Types::Result previous() const {
     return static_cast<BGT::Types::Result>(GetField<int8_t>(VT_PREVIOUS, 2));
   }
+  bool mutate_previous(BGT::Types::Result _previous) {
+    return SetField<int8_t>(VT_PREVIOUS, static_cast<int8_t>(_previous), 2);
+  }
   const flatbuffers::String *mode() const {
     return GetPointer<const flatbuffers::String *>(VT_MODE);
+  }
+  flatbuffers::String *mutable_mode() {
+    return GetPointer<flatbuffers::String *>(VT_MODE);
   }
   bool Verify(flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
            VerifyField<int16_t>(verifier, VT_WINS) &&
            VerifyField<int16_t>(verifier, VT_LOSSES) &&
+           VerifyField<int16_t>(verifier, VT_STREAK) &&
            VerifyField<float>(verifier, VT_MMR) &&
+           VerifyField<float>(verifier, VT_LAST_MMR) &&
            VerifyField<int8_t>(verifier, VT_PREVIOUS) &&
            VerifyOffset(verifier, VT_MODE) &&
            verifier.VerifyString(mode()) &&
@@ -91,8 +122,14 @@ struct ResultsBuilder {
   void add_losses(int16_t losses) {
     fbb_.AddElement<int16_t>(Results::VT_LOSSES, losses, 0);
   }
+  void add_streak(int16_t streak) {
+    fbb_.AddElement<int16_t>(Results::VT_STREAK, streak, 0);
+  }
   void add_mmr(float mmr) {
     fbb_.AddElement<float>(Results::VT_MMR, mmr, 0.0f);
+  }
+  void add_last_mmr(float last_mmr) {
+    fbb_.AddElement<float>(Results::VT_LAST_MMR, last_mmr, 0.0f);
   }
   void add_previous(BGT::Types::Result previous) {
     fbb_.AddElement<int8_t>(Results::VT_PREVIOUS, static_cast<int8_t>(previous), 2);
@@ -115,12 +152,16 @@ inline flatbuffers::Offset<Results> CreateResults(
     flatbuffers::FlatBufferBuilder &_fbb,
     int16_t wins = 0,
     int16_t losses = 0,
+    int16_t streak = 0,
     float mmr = 0.0f,
+    float last_mmr = 0.0f,
     BGT::Types::Result previous = BGT::Types::Result_UNINITIALIZED,
     flatbuffers::Offset<flatbuffers::String> mode = 0) {
   ResultsBuilder builder_(_fbb);
   builder_.add_mode(mode);
+  builder_.add_last_mmr(last_mmr);
   builder_.add_mmr(mmr);
+  builder_.add_streak(streak);
   builder_.add_losses(losses);
   builder_.add_wins(wins);
   builder_.add_previous(previous);
@@ -131,7 +172,9 @@ inline flatbuffers::Offset<Results> CreateResultsDirect(
     flatbuffers::FlatBufferBuilder &_fbb,
     int16_t wins = 0,
     int16_t losses = 0,
+    int16_t streak = 0,
     float mmr = 0.0f,
+    float last_mmr = 0.0f,
     BGT::Types::Result previous = BGT::Types::Result_UNINITIALIZED,
     const char *mode = nullptr) {
   auto mode__ = mode ? _fbb.CreateString(mode) : 0;
@@ -139,7 +182,9 @@ inline flatbuffers::Offset<Results> CreateResultsDirect(
       _fbb,
       wins,
       losses,
+      streak,
       mmr,
+      last_mmr,
       previous,
       mode__);
 }
@@ -150,6 +195,10 @@ inline const BGT::Types::Results *GetResults(const void *buf) {
 
 inline const BGT::Types::Results *GetSizePrefixedResults(const void *buf) {
   return flatbuffers::GetSizePrefixedRoot<BGT::Types::Results>(buf);
+}
+
+inline Results *GetMutableResults(void *buf) {
+  return flatbuffers::GetMutableRoot<Results>(buf);
 }
 
 inline bool VerifyResultsBuffer(

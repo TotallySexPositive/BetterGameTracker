@@ -2,6 +2,8 @@
 #include <string>
 #include <istream>
 #include <ostream>
+#include <map>
+
 #include "flatbuffer/ResultObject_generated.h"
 
 
@@ -9,12 +11,19 @@ class ResultObject
 {
 public:
 	ResultObject();
-	virtual ~ResultObject() = 0 {};
-	virtual void win() = 0;
-	virtual void lose() = 0;
-	virtual std::ostream save() = 0; //get a stream representation to save to file
-	virtual bool load(std::istream) = 0; //load the string representation from a stream
-private:
+	ResultObject(int, int, int, std::string, BGT::Types::Result, float, float);
+	~ResultObject() {};
+	virtual void win();
+	virtual void lose();
+	virtual bool save(std::ostream*); //save the flatbuffer to a ostream
+	static std::map<std::string, std::shared_ptr<ResultObject>> load(std::istream*); //load the flatbuffers from a istream
 
-	BGT::Types::Results* fb_result;
+public:
+	int wins;
+	int losses;
+	int streak;
+	float mmr;
+	float last_mmr;
+	BGT::Types::Result previous;
+	std::string mode;
 };

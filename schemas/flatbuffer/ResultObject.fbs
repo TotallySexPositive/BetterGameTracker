@@ -6,10 +6,12 @@ enum Result:byte {
 	UNINITIALIZED 
 }
 table Results {
-  wins:short = 0;
-  losses:short = 0;
-  mmr:float = 0.0;
-  previous:Result = UNINITIALIZED;
-  mode:string;
+  wins:short = 0;					// The wins total in this mode
+  losses:short = 0;					// The losses total in this mode
+  streak:short = 0;					// The current win/loss streak
+  mmr:float = 0.0;					// This MMR should be changing during a session
+  last_mmr:float = 0.0;				// This should be the mmr at the end of a session (on save)
+  previous:Result = UNINITIALIZED;	// The previous result
+  mode:string;						// The mode (i.e. hoops, rumble)
 }
 root_type Results;
